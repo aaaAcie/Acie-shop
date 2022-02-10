@@ -1,6 +1,6 @@
 <template>
   <van-form @submit="onSubmit">
-    <img class="logo" src="https://v3.cn.vuejs.org/logo.png">
+    <img class="logo" :src="state.logoUrl">
     <van-cell-group inset>
       <van-field
         v-model="state.username"
@@ -51,7 +51,13 @@
   import { computed, reactive } from 'vue'
   import { Toast } from 'vant'
   import { useCountDown } from '@vant/use'
-
+  // import router from '../../router'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useStore } from 'vuex' 
+  const router = useRouter()
+  const route = useRoute()
+  const store = useStore()
+  import { getLogo } from '@/api/index'
 
   const state = reactive({
     username: '17201234567',
@@ -61,7 +67,8 @@
     isSending: false,
     currentText: computed(() => state.isPassword ? '快速登录' : '密码登录'),
     captchaText: computed(() => state.isSending ? state.countDown.seconds+' s 后再发送' : '发送验证码'),
-    countDown: null
+    countDown: null,
+    logoUrl: ''
   })
   
   function changeMode() {
@@ -103,19 +110,20 @@
     const username = state.username.trim()
     if (username === '') { return Toast('请检测用户名') }
 
-    console.log('submit', values)
+    // console.log('submit', values)
+    let data = ''
     if ( state.isPassword ) {
       // const password = state.password.trim()
-      const { data } = await loginByPassword({
+      ({ data } = await loginByPassword({
         account: state.username,
         password: state.password
-      })
+      }))
     } else {
       // const captcha = state.captcha.trim()
-      const { data } = await loginByCaptcha({
+      ({ data } = await loginByCaptcha({
         phone: state.username,
         captcha: state.captcha
-      })
+      }))
     }
     if (data.status == 200){
       Toast('登录成功')
@@ -123,7 +131,18 @@
     } else {
       Toast('账号或密码错误')
     }
+    store.commit('setUser',data.data.token)
+    router.push(route.query.redirect ?? '/user')
   }
+
+  // 头像处理
+  const initLog = async () => {
+    const { data } = await getLogo()
+    if (data.status != 200){ return }
+    state.logoUrl = data.data.logo_url
+    console.log(data)
+  }
+  initLog()
 </script>
 
 <style lang="scss" scoped>

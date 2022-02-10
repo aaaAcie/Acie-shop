@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-
+import store from '@/store'
 const routes = [
   {
     path: '/',
@@ -100,6 +100,24 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach(to => {
+  if(!to.meta.requireAuth){
+    return true
+  }
+  if (!store.state.user && !window.localStorage.getItem('USER_TOKEN')) {
+    console.log('没有找到登录信息')
+    console.log(store.state.user)
+    console.log(window.localStorage.getItem('USER_TOKEN'))
+
+    return {
+      name: 'login',
+      query: {
+        redirect: to.fullPath
+      }
+    }
+  }
 })
 
 export default router

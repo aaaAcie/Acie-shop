@@ -6,3 +6,10 @@ export const getDefaultIndexData = () => {
     url: '/v2/diy/get_diy/moren'
   })
 }
+
+export const getLogo = () => {
+  return request({
+    method: 'GET',
+    url: '/wechat/get_logo'
+  })
+}
