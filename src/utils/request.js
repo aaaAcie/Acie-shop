@@ -16,4 +16,18 @@ request.interceptors.request.use(config => {
     return config
 })
 
+import router from '@/router'
+request.interceptors.response.use(config => {
+    // console.log(config)
+    if(config.data.status==410000){
+        router.push({
+            name: 'login',
+            query: {
+                redirect: router.currentRoute.fullPath
+            }
+        })
+    }
+    return config
+})
+
 export default request

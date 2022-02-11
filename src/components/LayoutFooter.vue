@@ -13,4 +13,8 @@
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.van-tabbar {
+  z-index: 100000;
+}
+</style>

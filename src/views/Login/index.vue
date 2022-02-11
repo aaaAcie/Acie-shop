@@ -1,6 +1,6 @@
 <template>
   <van-form @submit="onSubmit">
-    <img class="logo" :src="state.logoUrl">
+    <img class="logo" src="https://v3.cn.vuejs.org/logo.png">
     <van-cell-group inset>
       <van-field
         v-model="state.username"

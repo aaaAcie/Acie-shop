@@ -109,12 +109,20 @@
     <div class="description" v-html="storeInfo?.description"></div>
   </van-tab>
 </van-tabs>
-
+<van-action-bar>
+  <van-action-bar-icon icon="chat-o" text="客服" color="#ee0a24" />
+  <van-action-bar-icon icon="cart-o" text="购物车" to="/cart" />
+  <van-action-bar-icon icon="star" text="已收藏" color="#ff5000" />
+  <van-action-bar-button type="warning" text="加入购物车" @click="handleCartAdd" />
+  <van-action-bar-button type="danger" text="立即购买" />
+</van-action-bar>
 </template>
 
 <script setup>
-  import { computed, reactive, ref } from 'vue'
+  import { Toast } from 'vant';
+import { computed, reactive, ref } from 'vue'
   import { onBeforeRouteUpdate, useRouter } from 'vue-router'
+// import store from '../../store';
   const router = useRouter()
 
   import { getProductsDetail } from '@/api/products'
@@ -193,12 +201,47 @@
     specState.sku_choose[index] = attr
     console.log(sku.value)
   }
+
+  // 加入购物车
+  import { useStore } from 'vuex'
+  import { addToCart } from '@/api/cart'
+  const store = useStore()
+  async function handleCartAdd() {
+    if(!store.state.user) {
+      return router.push({
+        name: 'login',
+        query: {
+          redirect: router.currentRoute.value.fullPath
+        }
+      })
+    }
+    if (!specState.show) {
+      return specState.show = true
+    }
+    const { data } = await addToCart({
+      // new：提交状态，0 为加入购物车，1 为立即购买
+      // uniqueId：sku ID
+      // productId：商品 ID
+      // cartNum：加入个数
+      new: 0,
+      uniqueId: specDetail.value.unique,
+      productId: productId,
+      cartNum: specState.productNumb
+    })
+    if(data.status != 200) { return }
+    specState.show = false
+    Toast('加入购物车成功')
+  }
+
 </script>
 
 <style lang="scss" scoped>
 
 .van-nav-bar {
   position: fixed !important;
+}
+.van-tabs {
+  margin-bottom: 60px;
 }
 :deep(.van-tabs__wrap) {
   width: 80%;
@@ -320,6 +363,10 @@
     color: #be674e;
     border-color: #be674e;
   }
+}
+.van-action-bar {
+  z-index: 10000;
+  width: 100%;
 }
 
 </style>
