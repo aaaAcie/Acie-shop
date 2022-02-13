@@ -24,14 +24,14 @@ const routes = [
     props: true
   },
   {
-    path: '/address',
+    path: '/address/:cardId',
     name: 'address',
     component: () => import('@/views/Address/index.vue'),
     props: true,
     meta: { requireAuth: true }
   },
   {
-    path: '/order-confirm',
+    path: '/order-confirm/:cardId',
     name: 'order-confirm',
     component: () => import('@/views/OrderConfirm/index.vue'),
     props: true,

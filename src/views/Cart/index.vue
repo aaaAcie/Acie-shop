@@ -59,8 +59,8 @@ const initCart = async () => {
       stock: item.trueStock,
       productId: item.product_id
     })
-    
-  });
+  })
+  // console.log('push')
 }
 initCart()
 
