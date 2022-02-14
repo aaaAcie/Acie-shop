@@ -18,12 +18,6 @@ const routes = [
     component: () => import('@/views/Category/index.vue')
   },
   {
-    path: '/category-detail/:categoryId',
-    name: 'category-detail',
-    component: () => import('@/views/CategoryDetail/index.vue'),
-    props: true
-  },
-  {
     path: '/address/:cardId',
     name: 'address',
     component: () => import('@/views/Address/index.vue'),
